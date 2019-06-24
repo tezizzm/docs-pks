@@ -1,0 +1,74 @@
+---
+title: App Logging in Enterprise PKS
+owner: PKS
+---
+
+<strong><%= modified_date %></strong>
+
+Loggregator, the Cloud Foundry component responsible for logging, provides a
+stream of log output from your app and from Cloud Foundry system
+components that interact with your app during updates and execution.
+
+By default, Loggregator streams logs to your terminal.
+If you want to persist more than the limited amount of logging information that
+Loggregator can buffer, you can drain logs to a third-party log management
+service.
+See [Third-Party Log Management Services](../services/log-management.html).
+
+Cloud Foundry gathers and stores logs in a best-effort manner.
+If a client cannot consume log lines quickly enough, the Loggregator
+buffer may need to overwrite some lines before the client has consumed them.
+A syslog drain or a CLI tail can usually keep up with the flow of app
+logs.
+
+
+## <a id='types'></a> Contents of a Log Line
+
+PKS and BOSH log entries are formatted similarly but not identically.
+
+Every <%= vars.product_short %> log line contains 3 fields:
+
+* Timestamp information
+* Log type (origin code)
+* Message
+
+Every BOSH log line contains four fields:
+
+* Timestamp
+* Log type (origin code)
+* Channel: either `OUT`, for logs emitted on `stdout`, or `ERR`, for logs emitted on `stderr`
+* Message
+
+Loggregator assigns the timestamp when it receives log data.
+The log data is opaque to Loggregator, which simply puts it in the message field
+of the log line.
+Apps or system components sending log data to Loggregator may include
+their own timestamps, which then appear in the message field.
+
+Origin codes distinguish the different log types.
+Origin codes from system components have three letters.
+The app origin code is `APP` followed by slash and a digit that
+indicates the app instance.
+
+Many frameworks write to an app log that is separate from `stdout` and
+`stderr`.
+This is not supported by Loggregator.
+Your app must write to `stdout` or `stderr` for its logs to be included in
+the Loggregator stream.
+Check the buildpack your app uses to determine whether it automatically
+ensures that your app correctly writes logs to `stdout` and `stderr` only.
+Some buildpacks do this, and some do not.
+
+## <a id='pks-format'></a> <%= vars.product_short %> Log Formats
+## <a id='bosh-format'></a> BOSH Log Formats
+
+Different types of <%= vars.product_short %>  logs have different message formats, as shown in the examples
+below.
+The digit appended to the code indicates the instance index: 0 is the first instance, 1 is the second, and so on.
+
+## <a id='pks-format'></a> <%= vars.product_short %> Log Formats
+## <a id='bosh-format'></a> BOSH Log Formats
+
+Different types of <%= vars.product_short %>  logs have different message formats, as shown in the examples
+below.
+The digit appended to the code indicates the instance index: 0 is the first instance, 1 is the second, and so on.
