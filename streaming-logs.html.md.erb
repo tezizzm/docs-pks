@@ -22,22 +22,48 @@ A syslog drain or a CLI tail can usually keep up with the flow of app
 logs.
 
 
-## <a id='types'></a> Contents of a Log Line
+## <a id='types'></a> Contents of a Log Entry
 
-PKS and BOSH log entries are formatted similarly but not identically.
+A <%= vars.product_short %> Loggregator log entry consists of a log header followed by the content of the original trigger event. 
+The Loggregator log entry adheres to the following pattern:  
 
-Every <%= vars.product_short %> log line contains 3 fields:
+```
+Loggregator-Timestamp LogEntry-Source-Location LogEntryType --- LogEntryMessage
+```
 
-* Timestamp information
-* Log type (origin code)
-* Message
+A LogEntryMessage is the running task's log entry. The LogEntryMessage presents fields in the following pattern:
 
-Every BOSH log line contains four fields:
+```
+Sub-type : Process/Activity AccountID/UserID LogEntryMessage
+```
 
 * Timestamp
-* Log type (origin code)
-* Channel: either `OUT`, for logs emitted on `stdout`, or `ERR`, for logs emitted on `stderr`
+* Source/Location/type information (optional)
+* Log Entry Type 
+* Delimiter ("---")
+* Sub-type
+* Activity
+* Account ID/User ID
 * Message
+
+
+
+The timestamp follows different formats depending on long entry type:
+* 2019-05-16 14:59:34.897
+    * PKS Create Cluster
+* 2019-06-04T14:16:52-06:00
+    * PKS Delete Cluster
+    * PKS Get Credentials
+* [2019-05-16 17:12:48.833]
+    * PKS Successful Login
+    * PKS Unsuccessful Login
+* Jun 04 16:01:10
+    * Create User
+    * Delete User
+
+Source/Location/type information is optional and follows many different formats depending on log 
+
+Any given log entry could contain a multi-line json output snippet.
 
 Loggregator assigns the timestamp when it receives log data.
 The log data is opaque to Loggregator, which simply puts it in the message field
