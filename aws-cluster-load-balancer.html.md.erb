@@ -99,37 +99,40 @@ Perform the following steps to add tags:
 
 ### <a id='define-lb-terraform'></a> Define Load Balancer
 
-To define your AWS load balancer using Terraform,  perform the following steps:
+To define your AWS load balancer using Terraform, perform the following steps:
 
-1. To create a Terraform configuration file, create a file named `vm_extensions_config.yml` with the following content:
+1. To collect your PKS API Target Group names, run the following command:  
+
+    ```
+    terraform output pks_api_target_groups
+    ```
+
+1. To create a Terraform configuration file, create a file containing the following:
 
     ```
     ---
-    product-name: cf
+    product-name: pivotal-container-service
     resource-config:
-      diego_brain:
+      pivotal-container-service:
         elb_names:
-        - alb:SSH_TARGET_GROUP_1
-        - alb:SSH_TARGET_GROUP_2
+        - alb:PKS_API_TARGET_GROUP_1
+        - alb:PKS_API_TARGET_GROUP_2
         additional_vm_extensions:
-        - ssh-lb-security-groups
-      router:
-        elb_names:
-        - alb:WEB_TARGET_GROUPS_1
-        - alb:WEB_TARGET_GROUPS_2
-        additional_vm_extensions:
-        - web-lb-security-groups
-      tcp_router:
-        elb_names:
-        - alb:TCP_TARGET_GROUP_1
-        - alb:TCP_TARGET_GROUP_2
-        additional_vm_extensions:
-        - tcp-lb-security-groups
+        - pks-api-lb-security-groups
     ```
     Where:
-    * `SSH_TARGET_GROUP_X` is your set of SSH target groups. You can find these values by running `terraform output ssh_target_groups`. 
-    * `WEB_TARGET_GROUPS_X` is your set of web target groups. You can find these values by running `terraform output web_target_groups`. 
-    * `TCP_TARGET_GROUP_X` is your set of TCP target groups. You can find these values by running `terraform output tcp_target_groups`. 
+    * `PKS_API_TARGET_GROUP_X` is an individual PKS API Target Group name from the list returned by the 
+    preceding Terraform command. 
+    Add each returned group name, individually per line, as an `- alb:` prefixed value.  
+
+1. Save the file as `vm_extensions_config.yml`.  
+1. To create create the vm extension, run the following command:  
+
+    ```
+    om -k curl --path /api/v0/staged/vm_extensions/pks-api-lb-security-groups -x PUT -d \
+      '{"name": "pks-api-lb-security-groups", "cloud_properties": { "security_groups": ["pks_api_lb_security_group", "vms_security_group"] }}'
+
+    ```
 
 1. To apply the VM extension configuration use the following `om` CLI command:
 
