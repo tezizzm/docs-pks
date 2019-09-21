@@ -14,22 +14,33 @@ You can also [reconfigure](#reconfigure) your AWS <%= vars.product_short %> clus
 
 Using an AWS <%= vars.product_short %> cluster load balancer is optional, but adding one to your Kubernetes cluster can make it easier to manage the cluster using the PKS API and `kubectl`.
 
-<p class="note"><strong>Note</strong>: If Kubernetes master node VMs are recreated for any reason, you must reconfigure your 
+<p class="note"><strong>Note</strong>: If Kubernetes master node VMs are re-created for any reason, you must reconfigure your 
 AWS PKS cluster load balancers to point to the new master VMs.</p>
 
 ##<a id="prereqs"></a> Prerequisite
 
-The version of the PKS CLI you are using must match the version of the <%= vars.product_tile %> tile that you are installing.
+The version of the PKS CLI you use must match the version of the <%= vars.product_tile %> tile that you are installing.
 
 <p class="note"><strong>Note</strong>: This procedure uses example commands which you should modify to represent the details of your <%= vars.product_short %> installation.</p>
 
 ##<a id="create"></a> Configure an AWS Load Balancer Manually
 
+To manually create an AWS <%= vars.product_short %> cluster load balancer, complete the following tasks:  
+
+1. [Define Load Balancer](#define-lb)
+1. [Assign Security Groups](#assign-security-groups)
+1. [Configure Security Settings](#configure-security-settings)
+1. [Configure Health Check](#configure-health-check)
+1. [Add EC2 Instances](#add-ec2-instances)
+1. (Optional) [Add Tags](#add-tags)
+1. [Review and Create the Load Balancer](#review-create)
+
+
 ### <a id='define-lb'></a> Define Load Balancer
 
-To define your load balancer using AWS, you must provide a name, select a VPC, specify listeners, and select subnets where you want to create the load balancer.
+While defining your load balancer you must provide a name, select a VPC, specify listeners, and select subnets where you want to create the load balancer.
 
-Perform the following steps:
+To define your load balancer using AWS, perform the following steps:
 
 1. In a browser, navigate to the [AWS Management Console](https://console.aws.amazon.com/console/home).
 1. Under **Compute**, click **EC2**.
@@ -51,7 +62,7 @@ Perform the following steps:
 
 ### <a id='assign-security-groups'></a> Assign Security Groups
 
-Perform the following steps to assign security groups:
+To assign security groups, perform the following steps:
 
 1. On the **Assign Security Groups** page, select one of the following:
   * **Create a new security group**: Complete the security group
@@ -71,7 +82,7 @@ On the **Configure Security Settings** page, ignore the warning. SSL termination
 
 ### <a id='configure-health-check'></a> Configure Health Check
 
-Perform the following steps to configure the health check:
+To configure the health check, perform the following steps:
 
 1. On the **Configure Health Check** page, set the **Ping Protocol** to `TCP`.
 
@@ -81,7 +92,7 @@ Perform the following steps to configure the health check:
 
 ### <a id='add-ec2-instances'></a> Add EC2 Instances
 
-Perform the following steps:
+To add EC2 instances, perform the following steps:
 
 1. Verify the settings under **Availability Zone Distribution**.
 
@@ -89,13 +100,25 @@ Perform the following steps:
 
 ### <a id='add-tags'></a>(Optional) Add Tags
 
-Perform the following steps to add tags:
+To add tags to your load balancers, perform the following steps:
 
 1. Add tags to your resources to help organize and identify them. Each tag consists of a case-sensitive key-value pair.
 
 1. Click **Review and Create**.
 
+### <a id='review-create'></a> Review and Create the Load Balancer
+
+To review your load balancer details and create your load balancer, perform the following steps:
+
+1. On the **Review** page, review your load balancer details and edit any as necessary.
+
+1. Click **Create**.
+
 ##<a id="create-w-terraform"></a> Configure an AWS Load Balancer Using Terraform
+
+To create an <%= vars.product_short %> cluster load balancer using Terraform, complete the following tasks:  
+
+1. [Define Load Balancer](#define-lb-terraform)
 
 ### <a id='define-lb-terraform'></a> Define Load Balancer
 
@@ -146,57 +169,67 @@ To define your AWS load balancer using Terraform, perform the following steps:
     ```
     Where:
     * `YOUR-OPS-MANAGER-FQDN` is the URL at which you access your Ops Manager instance. This corresponds to `ops_manager_dns` in the Terraform output. 
-    * `USERNAME` is the user name you entered when configuring internal authentication. 
-    * `PASSWORD` is the password you entered when configuring internal authentication. 
-      <p class="note"><strong>Note</strong>: If you did not configure internal authentication, 
-        you must modify this command to use a client ID and secret instead of user name and password. 
-        For more information, see [Authentication](https://github.com/pivotal-cf/om/tree/master/docs#authentication) in the <code>pivotal-cf/om</code> repository.</p>
-
-For more information about the `om` CLI, see [om](https://github.com/pivotal-cf/om#om) in the `pivotal-cf/om` GitHub repository. 
-
-## <a id='review-create'></a> Review and Create the Load Balancer
-
-Perform the following steps to review your load balancer details and create your load balancer:
-
-1. On the **Review** page, review your load balancer details and edit any as necessary.
-
-1. Click **Create**.
+    * `USERNAME` is the username you entered when configuring internal authentication. 
+    * `PASSWORD` is the password you entered when configuring internal authentication.  
+<br>
+For more information about the `om` CLI, see [om](https://github.com/pivotal-cf/om#om) in the `pivotal-cf/om` GitHub repository.   
+  <p class="note"><strong>Note</strong>: If you did not configure internal authentication, 
+        you must modify this command to use a client ID and secret instead of username and password. 
+        For more information, see <a href="https://github.com/pivotal-cf/om/tree/master/docs#authentication">Authentication</a> 
+        in the <code>pivotal-cf/om</code> GitHub repository.</p>
 
 ## <a id='create-cluster'></a> Create a Cluster
 
-Create a Kubernetes cluster using the AWS-assigned address of your load balancer as the external
-hostname when you run the `pks create-cluster` command. For example:
+You can create a Kubernetes cluster using the PKS CLI.
 
-<pre class="terminal">$ pks create-cluster my-cluster \
-    --external-hostname example111a6511e9a099028c856be95-155233362.eu-west-1.elb.amazonaws.com \
-    --plan small --num-nodes 10
-</pre>
+1. To create a Kubernetes cluster using the PKS CLI, run the following command:  
+
+    ```
+    pks create-cluster my-cluster --external-hostname HOSTNAME --plan small --num-nodes 10
+    ```
+
+    Where `HOSTNAME` is the AWS-assigned address of your load balancer.  
+<br>
+    For example:
+
+     <pre class="terminal">$ pks create-cluster my-cluster \
+     --external-hostname example111a6511e9a099028c856be95-155233362.eu-west-1.elb.amazonaws.com \
+     --plan small --num-nodes 10
+     </pre>
 
 For more information, see [Create a Kubernetes Cluster](create-cluster.html#create) section of _Creating Clusters_.
 
+## <a id='manage-manual'></a> Manage an AWS Load Balancer
+
+You can use the AWS Console to manage your load balancers:  
+
+* [Point the Load Balancer to All Master VMs](#point)
+* [Reconfigure AWS Load Balancer](#reconfigure)
+
 ### <a id='point'></a> Point the Load Balancer to All Master VMs
+
+To point your load balancer to all master VMs, perform the following steps:  
 
 1. Locate the VM IDs of all master node VMs for your cluster.
 For information about locating the VM IDs, see [Identify Kubernetes Cluster Master VMs](create-cluster.html#master-id) in _Creating Clusters_.
 1. Navigate to the [AWS console](https://console.aws.amazon.com/console/home).
 1. Under EC2, select **Load balancers**.
 1. Select the load balancer.
-1. On the **Instances** tab, click **Edit instances**.
+1. Click **Instances** > **Edit instances**.
 1. Select all master nodes in the list of VMs.
 1. Click **Save**.
 
+### <a id="reconfigure"></a> Reconfigure AWS Load Balancer
 
-## <a id="reconfigure"></a> Reconfigure AWS Load Balancer
+If Kubernetes master node VMs are re-created for any reason, you must reconfigure your cluster load balancers to point to the new master VMs.
+For example, after a stemcell upgrade, BOSH re-creates the VMs in your deployment.
 
-If Kubernetes master node VMs are recreated for any reason, you must reconfigure your cluster load balancers to point to the new master VMs.
-For example, after a stemcell upgrade, BOSH recreates the VMs in your deployment.
-
-To reconfigure your AWS cluster load balancer to use the new master VMs, do the following:
+To reconfigure your AWS cluster load balancer to use the new master VMs, perform the following steps:
 
 1. Locate the VM IDs of the new master node VMs for the cluster. For information about locating the VM IDs, see [Identify Kubernetes Cluster Master VMs](create-cluster.html#master-id) in _Creating Clusters_.
 1. Navigate to the [AWS console](https://console.aws.amazon.com/console/home).
 1. Under EC2, select **Load balancers**.
 1. Select the load balancer.
-1. On the **Instances** tab, click **Edit instances**.
+1. Click **Instances** > **Edit instances**.
 1. Select the new master nodes in the list of VMs.
 1. Click **Save**.
