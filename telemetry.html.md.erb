@@ -20,60 +20,13 @@ You can configure <%= vars.product_short %> to use one of the following CEIP and
 + **Standard:** (Default) This level collects data anonymously. Your data is used to
 inform the ongoing development of <%= vars.product_short %>.
 
-+ **Enhanced:** This level enables VMware to warn you about
-security vulnerabilities and potential issues with your software configurations.
-For more information, see [Benefits of the Enhanced Participation Level](#benefits) below.
++ **Enhanced:** This level enables VMware to identify your organization so we may improve our products and services.
 
 <p class="note"><strong>Note:</strong> <%= vars.product_short %> does not collect any personally identifiable information (PII) at either participation level.
 For a list of the data <%= vars.product_short %> collects, see <a href="#data-dictionary">Data Dictionary</a>.</p>
 
-#### <a id="benefits"></a> Benefits of the Enhanced Participation Level
-
-Benefits you receive with the Enhanced participation level include but are not limited to the following:
-
-* **Usage data:** This gives you access to data about Kubernetes pod and cluster usage in your <%= vars.product_short %> installation. See [sample reports](#sample-reports) below for more details.
-* **Access to your telemetry data:** This gives you access to configuration and usage data about your <%= vars.product_short %> installation. See [sample reports](#sample-reports) below for more details.
-* **Proactive support:** This enables VMware to proactively warn you about unhealthy patterns.
-* **Benchmarks:** This is your usage relative to the rest of the <%= vars.product_short %> user base.
-
-The table below compares the Standard and Enhanced participation levels.
-
-<table>
-  <tr>
-    <th>Benefit</th>
-    <th>Standard Level</th>
-    <th>Enhanced Level</th>
-  </tr>
-  <tr>
-    <td>Usage data</td>
-    <td>Raw data</td>
-    <td>Reports and trend analysis</td>
-  </tr>
-  <tr>
-    <td>Access to your telemetry data</td>
-    <td>No</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>Proactive support</td>
-    <td>No</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>Benchmarks</td>
-    <td>No</td>
-    <td>Yes</td>
-  </tr>
-</table>
-
-<p class="note"><strong>Note:</strong> VMware reserves the right to change the benefits associated with the Enhanced participation level at any time.</p>
 
 ### <a id="configuration"></a>Configure CEIP and Telemetry
-For information about configuring CEIP and Telemetry participation, 
-see the [CEIP Opt-In Walkthrough](#walkthrough) video, below:  
-
-<a id="walkthrough"></a><iframe width="560" height="315" src="https://www.youtube.com/embed/RTyq9ODUbU4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 To configure CEIP and Telemetry, see the _CEIP and Telemetry_
 section of the installation topic for your IaaS:
 
@@ -110,28 +63,4 @@ The following diagram shows how telemetry data flows through the system componen
 ## <a id="data-dictionary"></a>Data Dictionary
 
 For information about <%= vars.k8s_runtime_abbr %> Telemetry collection and reporting, see the [<%= vars.k8s_runtime_abbr %> Telemetry Data](https://drive.google.com/open?id=18UCd1kbhR3xV_XOl6KcEU64GI6ySdkRa3iG_8QAROl8#gid=1858241440) spreadsheet, hosted on Google Drive.
-
-## <a id="sample-reports"></a>Sample Reports
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Q41g7uWBvhA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-You can view the interactive version of the [Sample Workbook](http://bit.ly/sampleworkbook) with [Tableau Reader](https://www.tableau.com/products/reader) (free to use). Click on the links below to see static screenshots of the reports.
-
-1. **[Consumption](http://bit.ly/consumptionreport)**: As an Operator of <%= vars.k8s_runtime_abbr %>, I need a way to monitor pod consumption across my <%= vars.k8s_runtime_abbr %> environments over time, so I can:
-  * See which environments and clusters get the heaviest use
-  * See temporal patterns in pod consumption
-  * Scale capacity accordingly
-  * Show and charge back users of <%= vars.k8s_runtime_abbr %> within my organization
-2. **[API heartbeats](http://bit.ly/apiheartbeats) + [Cluster heartbeats](http://bit.ly/clusterheartbeats)**: As an Operator of <%= vars.k8s_runtime_abbr %> I need a way to see the version of <%= vars.k8s_runtime_abbr %> each of my environments was running over time, so I can:
-  * Keep track of all my <%= vars.k8s_runtime_abbr %> environments and clusters
-  * Identify environments and clusters in need of upgrading
-3. **[Cluster creation events](http://bit.ly/clustercreate)**: As an Operator of <%= vars.k8s_runtime_abbr %> I want to see how often cluster creation succeeds across my <%= vars.k8s_runtime_abbr %> environments, so I can:
-  * Identify environments that encounter repeated failures and debug or intervene as appropriate to avoid frustration for cluster admins and users
-4. **[Cluster creation duration](http://bit.ly/createduration)**: As an Operator of <%= vars.k8s_runtime_abbr %> I want to see how long it takes to create clusters, so I can:
-  * Intervene when cluster creation significantly more time than expected, and adjust my plan and network configuration as appropriate
-5. **[Cluster creation errors](http://bit.ly/createerrors)**: As an Operator of <%= vars.k8s_runtime_abbr %>, I want to see what errors are being encountered most frequently during cluster creation so I can:
-  * Quickly identify widespread problems and remediate (e.g. NSX errors)
-6. **[Container images](http://bit.ly/containerimages)**: As an Operator of <%= vars.k8s_runtime_abbr %>, I want to see which container images are in use across my <%= vars.k8s_runtime_abbr %> installations so I can:
-  * Conduct an audit of container images and identify prohibited or problematic images
-  * Infer which workloads are running on <%= vars.k8s_runtime_abbr %>, to inform my planning, resourcing, and outreach
 
